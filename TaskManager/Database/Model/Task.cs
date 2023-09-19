@@ -22,13 +22,14 @@ namespace Task_Manager.Database.Model
         public DateTime? ActualEndDate { get; set; }
         public string Content { get; set; }
 
-        [ForeignKey("UserId")]
-        public User User { get; set; }
 
         [ForeignKey("CreatedBy")]
         public User CreatedByUser { get; set; }
 
         [ForeignKey("UpdatedBy")]
         public User UpdatedByUser { get; set; }
+
+        [ForeignKey("UserId")]
+        public User UserIdUser { get; set; }
     }
 }

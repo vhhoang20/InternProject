@@ -7,17 +7,16 @@ namespace Task_Manager.Database.Model
     {
         [Key]
         public long Id { get; set; }
+        [ForeignKey("Task")]
         public long TaskId { get; set; }
+        [ForeignKey("Activity")]
         public long? ActivityId { get; set; }
         public string Title { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public string Content { get; set; }
 
-        [ForeignKey("TaskId")]
         public Task Task { get; set; }
-
-        [ForeignKey("ActivityId")]
         public Activity Activity { get; set; }
     }
 }

@@ -11,94 +11,130 @@ namespace Task_Manager.Database
         public TaskDbContext(DbContextOptions<TaskDbContext> options) : base(options)
         { }
 
-        public DbSet<Activity> Regions { get; set; }
-        public DbSet<Comment> Countries { get; set; }
-        public DbSet<Tag> Locations { get; set; }
-        public DbSet<Model.Task> Jobs { get; set; }
-        public DbSet<TaskTag> Departments { get; set; }
-        public DbSet<TaskMeta> Employees { get; set; }
-        public DbSet<User> Dependents { get; set; }
+        public DbSet<Activity> Activity { get; set; }
+        public DbSet<Comment> Comment { get; set; }
+        public DbSet<Tag> Tag { get; set; }
+        public DbSet<Model.Task> Task { get; set; }
+        public DbSet<TaskTag> TaskTag { get; set; }
+        public DbSet<TaskMeta> TaskMeta { get; set; }
+        public DbSet<User> User { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Model.Task>()
+                .HasOne(t => t.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(t => t.CreatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Model.Task>()
+                .HasOne(t => t.UpdatedByUser)
+                .WithMany()
+                .HasForeignKey(t => t.UpdatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Model.Task>()
+                .HasOne(t => t.UserIdUser)
+                .WithMany()
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Activity>()
+                .HasOne(a => a.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(a => a.CreatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Activity>()
+                .HasOne(a => a.UpdatedByUser)
+                .WithMany()
+                .HasForeignKey(a => a.UpdatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Activity>()
+                .HasOne(a => a.UserIdUser)
+                .WithMany()
+                .HasForeignKey(a => a.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Activity>()
+                .HasOne(a => a.Task)
+                .WithMany()
+                .HasForeignKey(a => a.TaskId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             modelBuilder.Entity<User>()
-            .HasIndex(u => u.Username)
-            .IsUnique()
-            .HasName("uq_username");
+                .HasIndex(u => u.Username)
+                .IsUnique()
+                .HasDatabaseName("uq_username");
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Mobile)
                 .IsUnique()
-                .HasName("uq_mobile");
+                .HasDatabaseName("uq_mobile");
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique()
-                .HasName("uq_email");
+                .HasDatabaseName("uq_email");
 
             modelBuilder.Entity<Model.Task>()
                 .HasIndex(t => t.UserId)
-                .HasName("idx_task_user");
+                .HasDatabaseName("idx_task_user");
 
-            // Define index for the "createdBy" column
             modelBuilder.Entity<Model.Task>()
                 .HasIndex(t => t.CreatedBy)
-                .HasName("idx_task_creator");
+                .HasDatabaseName("idx_task_creator");
 
-            // Define index for the "updatedBy" column
             modelBuilder.Entity<Model.Task>()
                 .HasIndex(t => t.UpdatedBy)
-                .HasName("idx_task_modifier");
+                .HasDatabaseName("idx_task_modifier");
 
-            // Define index for the "taskId" column
             modelBuilder.Entity<TaskMeta>()
                 .HasIndex(tm => tm.TaskId)
-                .HasName("idx_meta_task");
+                .HasDatabaseName("idx_meta_task");
 
-            // Define unique constraint for the combination of "taskId" and "key" columns
             modelBuilder.Entity<TaskMeta>()
                 .HasIndex(tm => new { tm.TaskId, tm.Key })
                 .IsUnique()
-                .HasName("uq_task_meta");
+                .HasDatabaseName("uq_task_meta");
 
             modelBuilder.Entity<TaskTag>()
-            .HasIndex(tt => tt.TaskId)
-            .HasName("idx_tt_task");
+                .HasKey(tt => new { tt.TaskId, tt.TagId });
 
-            // Define index for the "tagId" column
+            modelBuilder.Entity<TaskTag>()
+                .HasIndex(tt => tt.TaskId)
+                .HasDatabaseName("idx_tt_task");
+
             modelBuilder.Entity<TaskTag>()
                 .HasIndex(tt => tt.TagId)
-                .HasName("idx_tt_tag");
+                .HasDatabaseName("idx_tt_tag");
 
             modelBuilder.Entity<Activity>()
-            .HasIndex(a => a.UserId)
-            .HasName("idx_activity_user");
+                .HasIndex(a => a.UserId)
+                .HasDatabaseName("idx_activity_user");
 
-            // Define index for the "taskId" column
             modelBuilder.Entity<Activity>()
                 .HasIndex(a => a.TaskId)
-                .HasName("idx_activity_task");
+                .HasDatabaseName("idx_activity_task");
 
-            // Define index for the "createdBy" column
             modelBuilder.Entity<Activity>()
                 .HasIndex(a => a.CreatedBy)
-                .HasName("idx_activity_creator");
+                .HasDatabaseName("idx_activity_creator");
 
-            // Define index for the "updatedBy" column
             modelBuilder.Entity<Activity>()
                 .HasIndex(a => a.UpdatedBy)
-                .HasName("idx_activity_modifier");
+                .HasDatabaseName("idx_activity_modifier");
 
             modelBuilder.Entity<Comment>()
-            .HasIndex(c => c.TaskId)
-            .HasName("idx_comment_task"); 
+                .HasIndex(c => c.TaskId)
+                .HasDatabaseName("idx_comment_task"); 
 
-            // Define index for the "activityId" column
             modelBuilder.Entity<Comment>()
                 .HasIndex(c => c.ActivityId)
-                .HasName("idx_comment_activity");
+                .HasDatabaseName("idx_comment_activity");
         }
     }
 }

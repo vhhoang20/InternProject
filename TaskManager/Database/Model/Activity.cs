@@ -8,6 +8,7 @@ namespace Task_Manager.Database.Model
         [Key]
         public long Id { get; set; }
         public long UserId { get; set; }
+        [ForeignKey("Task")]
         public long TaskId { get; set; }
         public long CreatedBy { get; set; }
         public long UpdatedBy { get; set; }
@@ -23,16 +24,15 @@ namespace Task_Manager.Database.Model
         public DateTime? ActualEndDate { get; set; }
         public string Content { get; set; }
 
-        [ForeignKey("UserId")]
-        public User User { get; set; }
-
-        [ForeignKey("TaskId")]
-        public Task Task { get; set; }
-
         [ForeignKey("CreatedBy")]
         public User CreatedByUser { get; set; }
 
         [ForeignKey("UpdatedBy")]
         public User UpdatedByUser { get; set; }
+
+        [ForeignKey("UserId")]
+        public User UserIdUser { get; set; }
+
+        public Task Task { get; set; }
     }
 }

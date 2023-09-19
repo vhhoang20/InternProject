@@ -7,11 +7,11 @@ namespace Task_Manager.Database.Model
     {
         [Key]
         public long Id { get; set; }
+        [ForeignKey("Task")]
         public long TaskId { get; set; }
         public string Key { get; set; }
         public string Content { get; set; }
 
-        [ForeignKey("TaskId")]
         public Task Task { get; set; }
     }
 }
